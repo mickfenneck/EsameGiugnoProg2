@@ -6,12 +6,15 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.binding.NumberBinding;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -72,18 +75,17 @@ public class EsameGiugnoProg2 extends Application {
         scacchiera.setVgap(3);
         root.setCenter(scacchiera);
         
+        ListenerTasti listKey = new ListenerTasti();
+        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, listKey);
+        
+        
         final Timeline tl = new Timeline();
         tl.setCycleCount(Animation.INDEFINITE);
         KeyFrame move = 
             new KeyFrame(Duration.seconds(1),
             new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent event) {
-                    if(alg1.isSelected())
-                        scacchiera.Alg1();
-                    else if(alg2.isSelected())
-                        scacchiera.Alg2();
-                    else if(alg3.isSelected())
-                        scacchiera.Alg3();
+                    stepFun();
                 }
         });
 
@@ -110,19 +112,13 @@ public class EsameGiugnoProg2 extends Application {
             @Override
             public void handle(ActionEvent t) {
                 scacchiera.Clear();
-                //ridisegna D:
             }
         });
         
         step.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent t) {
-                if(alg1.isSelected())
-                    scacchiera.Alg1();
-                else if(alg2.isSelected())
-                    scacchiera.Alg2();
-                else if(alg3.isSelected())
-                    scacchiera.Alg3();
+                stepFun();
             }
         });
         
@@ -184,6 +180,27 @@ public class EsameGiugnoProg2 extends Application {
             ret += "\n";
         }
         return ret;
+    }
+    
+    public void stepFun() {
+        if(alg1.isSelected())
+            scacchiera.Alg1();
+        else if(alg2.isSelected())
+            scacchiera.Alg2();
+        else if(alg3.isSelected())
+            scacchiera.Alg3();
+    }
+    
+    
+    class ListenerTasti implements EventHandler<KeyEvent> {
+        @Override
+        public void handle(KeyEvent t) {
+            KeyCode tasto = t.getCode();
+            if(tasto.equals(KeyCode.C))
+                scacchiera.Clear();
+            else if (tasto.equals(KeyCode.S))
+                stepFun();       
+        }
     }
 
     public static void main(String[] args) {
